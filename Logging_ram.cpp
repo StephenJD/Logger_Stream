@@ -3,6 +3,7 @@
 #include <sstream>
 
 using namespace std;
+using namespace logging;
 
 ////////////////////////////////////
 //            RamStream           //
@@ -46,7 +47,7 @@ void RAM_Logger::writeToFile(char* start, char* end) {
 }
 
 Logger& RAM_Logger::logTime() {
-	Cout_Logger::logTime();
+	Console_Logger::logTime();
 	_ram_mustTabTime = true;
 	return *this;
 }

@@ -1,36 +1,41 @@
 // StdLogger.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include "Logging_cout.h"
+#include "Logging_console.h"
 #include "Logging_file.h"
 #include "Logging_ram.h"
 
 using namespace std;
- 
-Logger& logger() {
-    static Cout_Logger std_cout(std::cout);
-    return std_cout;
-}
+using namespace logging;
+namespace logging {
+    Logger& logger() {
+        static Console_Logger std_cout(L_null);
+        return std_cout;
+    }
 
-Logger& flogger() {
-    static File_Logger logFile("Test", std::cout);
-    return logFile;
-}
+    Logger& flogger() {
+        static File_Logger logFile("Test", cout);
+        return logFile;
+    }
 
-Logger& ram_logger() {
-    static RAM_Logger logFile(5, "Rest", std::cout);
-    return logFile;
+    Logger& ram_logger() {
+        static RAM_Logger logFile(5, "Rest", cout);
+        return logFile;
+    }
 }
 
 int main()
 {
     std::cout << "Hello World!\n";
-    logger() << "Cout_Logger" << endl;
-    logger() << "Cout_Logger hex " << hex << 700 << L_flush;
-    logger() << "Cout_Logger dec " << dec << 700 << std::endl;
-    logger() << "Cout_Logger tabs " << L_tabs << dec << 700 << 300 << L_concat << "Done" << endl;
-    logger() << "Cout_Logger width " << setbase(16) << setw(10) << 10 << setw(5) << 19 << "Done" << endl;
-    logger() << L_time << "Cout_Logger time" << endl;
+    logger() << "Console_Logger is null" << endl;
+    logger().activate();
+    logger() << "Console_Logger is active\n";
+    logger() << L_location << endl;
+    logger() << "Console_Logger hex " << hex << 700 << L_flush;
+    logger() << "Console_Logger dec " << dec << 700 << std::endl;
+    logger() << "Console_Logger tabs " << L_tabs << dec << 700 << 300 << L_concat << "Done" << endl;
+    logger() << "Console_Logger width " << setbase(16) << setw(10) << 10 << setw(5) << 19 << "Done" << endl;
+    logger() << L_time << "Console_Logger time" << endl;
     flogger() << L_flush << "StartFile" << endl;
     flogger() << L_time << "new data" << endl;
     flogger() << L_time << "Flushed more data" << L_flush;

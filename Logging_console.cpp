@@ -1,26 +1,30 @@
-#include "Logging_cout.h"
+#include "Logging_console.h"
 #include <iostream>
 #include <string>
 #include <chrono>
 
 using namespace std;
+using namespace logging;
 
 	Logger & Logger::operator <<(Flags flag) {
+		if (is_null()) return *this;
 		switch (flag) {
 		case L_flush: 
 			_flags = static_cast<Flags>(_flags & L_allwaysFlush); // all zero's except L_allwaysFlush if set.
-			(*this) << " |F|" << endl; flush();
+			(*this) << " |F|\n"; 
+			flush();
 			break;
-		case L_endl: // fall through	
+		case L_endl:	
 			if (_flags & L_allwaysFlush) { (*this) << " |F|"; }
 			else if (_flags == L_startWithFlushing) { (*this) << " |SF|"; }
 			if (prePrint()) {
-				auto std_cout(static_cast<Cout_Logger&>(*this));
-				std_cout.stream() << endl;
+				auto std_cout(static_cast<Console_Logger&>(*this));
+				std_cout.stream() << "\n";
 			}
-			stream() << endl; // fall through
+			stream() << "\n";
 			if (_flags & L_allwaysFlush || _flags == L_startWithFlushing) flush();
-		case L_default:
+			[[fallthrough]];
+		case L_clearFlags:
 			if (_flags != L_startWithFlushing && flag != L_time) {
 				_flags = static_cast<Flags>(_flags & L_allwaysFlush); // all zero's except L_allwaysFlush if set.
 			}
@@ -32,6 +36,11 @@ using namespace std;
 			addFlag(flag);
 		}
 		return *this;
+	}
+
+	void Logger::activate(bool makeActive) {
+		if (makeActive) removeFlag(L_null);
+		else addFlag(L_null);
 	}
 
 	Logger& Logger::logTime() {
@@ -52,10 +61,10 @@ using namespace std;
 	}
 
 ////////////////////////////////////
-//            Cout_Logger         //
+//            Console_Logger         //
 ////////////////////////////////////
 
-	Cout_Logger::Cout_Logger(ostream& ostream) : _ostream(&ostream) {
+	Console_Logger::Console_Logger(Flags initFlags, ostream& ostream) : Logger{ initFlags }, _ostream{ &ostream } {
 		ostream.flush();
 	}
 

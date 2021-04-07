@@ -1,0 +1,6 @@
+﻿  Logging_console.cpp
+  Logging_file.cpp
+  Logging_ram.cpp
+  Usage_Logger.cpp
+  Generating Code...
+  StdLogger.vcxproj -> C:\Users\Stephen\Documents\MyData\Arduino\Arduino_SJD\HeatingSystemSketch\libraries\Debug\StdLogger.exe

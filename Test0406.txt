@@ -1,0 +1,50 @@
+ |F|
+StartFile
+06/04/21 16:33:32	new data
+06/04/21 16:33:32	Flushed more data |F|
+06/04/21 16:33:32	yet	more	data
+ |F|
+StartFile
+06/04/21 16:33:59	new data
+06/04/21 16:33:59	Flushed more data |F|
+06/04/21 16:33:59	yet	more	data
+ |F|
+StartFile
+06/04/21 17:00:07	new data
+06/04/21 17:00:07	Flushed more data |F|
+06/04/21 17:00:07	yet	more	data
+ |F|
+StartFile
+06/04/21 17:13:13	new data
+06/04/21 17:13:13	Flushed more data |F|
+06/04/21 17:13:13	yet	more	data
+ |F|
+StartFile
+06/04/21 19:14:58	new data
+06/04/21 19:14:58	Flushed more data |F|
+06/04/21 19:14:58	yet	more	data
+ |F|
+StartFile
+06/04/21 20:10:37	new data
+06/04/21 20:10:37	Flushed more data |F|
+06/04/21 20:10:37	yet	more	data
+ |F|
+StartFile
+06/04/21 20:28:03	new data
+06/04/21 20:28:03	Flushed more data |F|
+06/04/21 20:28:03	yet	more	data
+ |F|
+StartFile
+06/04/21 20:47:20	new data
+06/04/21 20:47:20	Flushed more data |F|
+06/04/21 20:47:20	yet	more	data
+ |F|
+StartFile
+06/04/21 20:49:05	new data
+06/04/21 20:49:05	Flushed more data |F|
+06/04/21 20:49:05	yet	more	data
+ |F|
+StartFile
+06/04/21 20:51:03	new data
+06/04/21 20:51:03	Flushed more data |F|
+06/04/21 20:51:03	yet	more	data

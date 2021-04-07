@@ -1,0 +1,10 @@
+ |F|
+StartFile
+29/03/21 21:22:11	new data
+29/03/21 21:22:11	Flushed more data |F|
+29/03/21 21:22:11	yet	more	data
+ |F|
+StartFile
+29/03/21 21:23:41	new data
+29/03/21 21:23:41	Flushed more data |F|
+29/03/21 21:23:41	yet	more	data

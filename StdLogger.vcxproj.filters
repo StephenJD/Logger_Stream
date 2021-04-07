@@ -15,10 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="StdLogger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Logging_cout.cpp">
+    <ClCompile Include="Logging_console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Logging_file.cpp">
@@ -27,9 +24,12 @@
     <ClCompile Include="Logging_ram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Usage_Logger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Logging_cout.h">
+    <ClInclude Include="Logging_console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Logging_file.h">

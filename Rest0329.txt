@@ -1,0 +1,10 @@
+ |F|
+RamFile
+29/03/21 21:22:11	Ram data
+29/03/21 21:22:11	Flushed Ram data |F|
+29/03/21 21:22:11	yet	more	Ram data |F|
+ |F|
+RamFile
+29/03/21 21:23:41	Ram data
+29/03/21 21:23:41	Flushed Ram data |F|
+29/03/21 21:23:41	yet	more	Ram data |F|

@@ -4,21 +4,22 @@
 #include <chrono>
 
 using namespace std;
+using namespace logging;
 
 ////////////////////////////////////
 //            File_Logger           //
 ////////////////////////////////////
 
 File_Logger::File_Logger(const string & fileNameStem, std::ostream& ostream) 
-	: Cout_Logger(ostream) 
+	: Console_Logger(L_clearFlags, ostream) 
 	, _fileNameStem(fileNameStem)
 	{
 		_fileNameStem[4] = 0;
-		Cout_Logger::stream() << "\nFile_Logger: " << _fileNameStem << endl;
+		Console_Logger::stream() << "\nFile_Logger: " << _fileNameStem << endl;
 	}
 
 File_Logger::File_Logger(const File_Logger& fileLogger) 
-	: Cout_Logger(fileLogger)
+	: Console_Logger(fileLogger)
 	, _fileNameStem(fileLogger._fileNameStem)
 	{}
 
@@ -41,9 +42,9 @@ std::ostream& File_Logger::stream() {
 }
 
 Logger& File_Logger::logTime() {
-	Cout_Logger std_out(static_cast<Cout_Logger&>(*this));
+	Console_Logger std_out(static_cast<Console_Logger&>(*this));
 	std_out << _fileNameStem << " ";
-	Cout_Logger::logTime();
+	Console_Logger::logTime();
 	_SD_mustTabTime = true;
 	return *this;
 }
