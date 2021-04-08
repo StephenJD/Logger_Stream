@@ -19,7 +19,7 @@ namespace logging {
     }    
     
     Logger& two_file_logger() {
-        static File_Logger<> logFile("2est", L_startWithFlushing);
+        static File_Logger logFile("2File", L_startWithFlushing, flogger());
         return logFile;
     }
 
@@ -57,7 +57,7 @@ int main()
     flogger() << L_time << "new data" << endl;
     flogger() << L_time << "Flushed more data" << L_flush;
     flogger() << L_time << L_tabs << "yet" << "more" << "data" << endl;
-
+    two_file_logger() << L_flush << "Start-Two-File" << endl;
     ram_logger() << L_flush << "RamFile" << endl;
     ram_logger() << L_time << "Ram data" << endl;
     ram_logger() << L_time << "Flushed Ram data" << L_flush;

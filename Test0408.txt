@@ -83,3 +83,78 @@ StartFile
 08/04/21 15:05:14	new data
 08/04/21 15:05:14	Flushed more data |F|
 08/04/21 15:05:14	yet	more	data
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 15:17:01	new data
+08/04/21 15:17:01	Flushed more data |F|
+08/04/21 15:17:01	yet	more	data
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 15:22:20	new data
+08/04/21 15:22:20	Flushed more data |F|
+08/04/21 15:22:20	yet	more	data
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 15:35:46	new data
+08/04/21 15:35:46	Flushed more data |F|
+08/04/21 15:35:46	yet	more	data
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 15:45:06	new data
+08/04/21 15:45:06	Flushed more data |F|
+08/04/21 15:45:06	yet	more	data
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 15:46:15	new data
+08/04/21 15:46:15	Flushed more data |F|
+08/04/21 15:46:15	yet	more	data
+ |F|
+StartFile
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 15:47:49	new data
+08/04/21 15:47:49	Flushed more data |F|
+08/04/21 15:47:49	yet	more	data
+ |F|
+Start-Two-File
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 15:49:50	new data
+08/04/21 15:49:50	Flushed more data |F|
+08/04/21 15:49:50	yet	more	data
+ |F|
+Start-Two-File
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 15:51:41	new data
+08/04/21 15:51:41	Flushed more data |F|
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 16:09:24	new data
+08/04/21 16:09:24	Flushed more data |F|
+08/04/21 16:09:24	yet	more	data
+ |F|
+Start-Two-File
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 16:17:41	new data
+08/04/21 16:17:41	Flushed more data |F|
+08/04/21 16:17:41	yet	more	data
+Constructing Widget |SF|
+ |F|
+StartFile
+08/04/21 16:19:36	new data
+08/04/21 16:19:36	Flushed more data |F|
+08/04/21 16:19:36	yet	more	data
+ |F|
+Start-Two-File

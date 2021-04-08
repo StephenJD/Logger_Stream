@@ -13,13 +13,15 @@ namespace logging {
 	class File_Logger : public baseLogger {
 	public:
 		File_Logger(const std::string& fileNameStem, Flags initFlags, std::ostream& mirrorStream = std::clog);
+		File_Logger(const std::string& fileNameStem, Flags initFlags, Logger& mirrorStream) : File_Logger(fileNameStem, initFlags) { _mirror = &mirrorStream; }
 		std::ostream& stream() override { open(); return _dataFile; }
-		std::ostream& mirror_stream() override { return baseLogger::stream(); }
+		std::ostream& mirror_stream() override { return _mirror ? _mirror->stream() : baseLogger::stream(); }
 		void flush() override { baseLogger::flush(); _dataFile.flush(); }
 		bool open();
 	private:
 		Logger& logTime() override;
 		std::string generateFileName();
+		Logger* _mirror = 0;
 
 		std::ofstream _dataFile;
 		std::string _fileNameStem;
@@ -29,7 +31,7 @@ namespace logging {
 	File_Logger<baseLogger>::File_Logger(const std::string& fileNameStem, Flags initFlags, std::ostream& mirrorStream)
 		: baseLogger(initFlags, mirrorStream)
 		, _fileNameStem(fileNameStem) {
-		_fileNameStem[4] = 0;
+		_fileNameStem.erase(4);
 		baseLogger::stream() << "\nFile_Logger: " << _fileNameStem << std::endl;
 	}
 
