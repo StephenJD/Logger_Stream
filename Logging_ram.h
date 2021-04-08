@@ -22,18 +22,16 @@ namespace logging {
 	/// Logs to RAM and flushes to file when ram-buffer is full.
 	/// Mirrors to the provided ostream - typcally cout.
 	/// </summary>
-	class RAM_Logger : public File_Logger {
+	class RAM_Logger : public File_Logger<Console_Logger> {
 	public:
-		RAM_Logger(uint16_t ramFile_size, const std::string& fileNameStem, std::ostream& ostream);
+		RAM_Logger(uint16_t ramFile_size, const std::string& fileNameStem, Flags initFlags, std::ostream& ostream = std::clog);
 		std::ostream& stream() override;
 		void flush() override;
 	private:
 		friend class RamStream;
 		Logger& logTime() override;
-		bool is_tabs() const override { return _ram_mustTabTime ? (_ram_mustTabTime = false, true) : _flags & L_tabs; }
 		void writeToFile(char* start, char* end);
 
-		mutable bool _ram_mustTabTime = false;
 		std::unique_ptr<char[]> _ramFile;
 		RamStream _ramStream;
 		std::ostream _stream;

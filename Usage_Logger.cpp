@@ -14,20 +14,36 @@ namespace logging {
     }
 
     Logger& flogger() {
-        static File_Logger logFile("Test", cout);
+        static File_Logger logFile("Test", L_startWithFlushing);
+        return logFile;
+    }    
+    
+    Logger& two_file_logger() {
+        static File_Logger<> logFile("2est", L_startWithFlushing);
         return logFile;
     }
 
     Logger& ram_logger() {
-        static RAM_Logger logFile(5, "Rest", cout);
+        static RAM_Logger logFile(5, "Rest", L_allwaysFlush);
         return logFile;
     }
+}
+
+class Widget {
+public:
+    Widget() { flogger() << "Constructing Widget" << endl; }
+    int val = 5; 
+} widget;
+
+Logger& operator <<(Logger& log, const Widget& w) {
+    log << "Widget-Object val: " << w.val;
+    return log;
 }
 
 int main()
 {
     std::cout << "Hello World!\n";
-    logger() << "Console_Logger is null" << endl;
+    logger() << L_time << "Console_Logger is null" << endl;
     logger().activate();
     logger() << "Console_Logger is active\n";
     logger() << L_location << endl;
@@ -36,6 +52,7 @@ int main()
     logger() << "Console_Logger tabs " << L_tabs << dec << 700 << 300 << L_concat << "Done" << endl;
     logger() << "Console_Logger width " << setbase(16) << setw(10) << 10 << setw(5) << 19 << "Done" << endl;
     logger() << L_time << "Console_Logger time" << endl;
+    logger() << L_time << "Console_Logger widget: " << widget << endl;
     flogger() << L_flush << "StartFile" << endl;
     flogger() << L_time << "new data" << endl;
     flogger() << L_time << "Flushed more data" << L_flush;

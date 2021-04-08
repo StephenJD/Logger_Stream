@@ -3,6 +3,7 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
+#include <typeinfo>
 #include <version>
 #ifdef __cpp_lib_source_location
 #include <source_location>
@@ -35,11 +36,14 @@ namespace logging {
 
 	class Logger {
 	public:
-		void activate(bool makeActive = true);
+		void activate(bool makeActive = true) { makeActive ? _flags -= L_null : _flags += L_null; }
 		Flags addFlag(Flags flag) { return _flags += flag; }
 		Flags removeFlag(Flags flag) { return _flags -= flag; }
 
 		virtual void flush() { stream().flush(); _flags -= L_startWithFlushing; }
+		
+		template<typename T>
+		Logger& log(T value);
 
 		Logger& operator <<(Flags);
 
@@ -56,25 +60,43 @@ namespace logging {
 		}
 
 		virtual std::ostream& stream();
+		virtual std::ostream& mirror_stream();
 
 		static int monthNo();
 		static int dayNo();
 
 	protected:
-		Logger(Flags initFlag = L_null) : _flags{ initFlag } {};
-		Logger(const Logger& rhs) : _flags{ rhs._flags }, _mustTabTime{ rhs._mustTabTime } {};
+		Logger(Flags initFlag = L_null) : _flags{ initFlag } {}
+		Logger(Flags initFlags = L_null, std::ostream& ostream = std::clog) {}
+
 		template<class T> friend Logger& operator <<(Logger& logger, T value);
 
-		virtual bool is_tabs() const { return false; }
-		virtual bool is_null() const { return _flags & L_null; }
-		virtual bool prePrint() const { return false; }
+		bool is_tabs() const { return _flags & (L_tabs | L_time); }
+		bool is_null() const { return _flags == L_null; }
 		bool is_cout() const { return _flags & L_cout; }
+		bool has_time() const { return _flags & L_time; }
 
-		virtual void setBaseTimeTab(bool) {}
 		virtual Logger& logTime();
 		Flags _flags = L_startWithFlushing;
-		mutable bool _mustTabTime = false;
 	};
+	// Streaming template	
+	template<typename T>
+	Logger& operator <<(Logger& logger, T value) {
+		return logger.log(value);
+	}
+
+	template<typename T>
+	Logger& Logger::log(T value) {
+		if (is_null()) return *this;
+		if (is_tabs()) {
+			mirror_stream() << "\t";
+			stream() << "\t";
+			removeFlag(L_time);
+		}
+		mirror_stream() << value;
+		stream() << value;
+		return *this;
+	}
 
 	class Null_Buff : public std::streambuf { // derive because std::streambuf constructor is protected
 	public:
@@ -86,7 +108,8 @@ namespace logging {
 	inline std::ostream null_ostream{ &null_buff };
 
 	inline std::ostream& Logger::stream() { return null_ostream; }
-
+	inline std::ostream& Logger::mirror_stream() { return null_ostream; }
+	
 	/// <summary>
 	/// Logs to console - clog(default), cerr or cout.
 	/// clog leaves flushing to the client (more efficient).
@@ -97,23 +120,8 @@ namespace logging {
 		Console_Logger(Flags initFlags, std::ostream& ostream = std::clog);
 		std::ostream& stream() override { return is_null() ? Logger::stream() : *_ostream; }
 	protected:
-		bool is_tabs() const override { return _mustTabTime ? (_mustTabTime = false, true) : _flags & L_tabs; }
 		std::ostream* _ostream = 0;
 	};
-
-	// Streaming template	
-	template<class T>
-	Logger& operator <<(Logger& logger, T value) {
-		if (logger.prePrint()) {
-			Console_Logger std_out(static_cast<Console_Logger&>(logger));
-			std_out << value;
-			logger.setBaseTimeTab(false);
-		}
-		if (logger.is_tabs())
-			logger.stream() << "\t";
-		logger.stream() << value;
-		return logger;
-	}
 
 	Logger& logger(); // to be defined by the client
 }

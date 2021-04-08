@@ -144,7 +144,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Logging_console.cpp" />
-    <ClCompile Include="Logging_file.cpp" />
     <ClCompile Include="Logging_ram.cpp" />
     <ClCompile Include="Usage_Logger.cpp" />
   </ItemGroup>
