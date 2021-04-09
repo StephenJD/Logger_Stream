@@ -15,12 +15,16 @@ Logger & Logger::operator <<(Flags flag) {
 		(*this) << " |F|\n"; 
 		flush();
 		break;
-	case L_endl:	
-		if (_flags & L_allwaysFlush) { (*this) << " |F|"; }
-		else if (_flags == L_startWithFlushing) { (*this) << " |SF|"; }
-		mirror_stream() << "\n";
-		stream() << "\n";
-		if (_flags & L_allwaysFlush || _flags == L_startWithFlushing) flush();
+	case L_endl: {
+			if (_flags & L_allwaysFlush) { (*this) << " |F|"; } else if (_flags == L_startWithFlushing) { (*this) << " |SF|"; }
+			auto streamPtr = &stream();
+			Logger* logger = this;
+			do {
+				(*streamPtr) << "\n";
+				logger = logger->mirror_stream(streamPtr);
+			} while (streamPtr);
+			if (_flags & L_allwaysFlush || _flags == L_startWithFlushing) flush();
+		}
 		[[fallthrough]];
 	case L_clearFlags:
 		if (_flags != L_startWithFlushing) {
@@ -35,21 +39,18 @@ Logger & Logger::operator <<(Flags flag) {
 	return *this;
 }
 
-Logger& Logger::logTime() {
+tm* Logger::getTime() {
 	std::time_t now = std::time(nullptr);
-	(*this) << std::put_time(std::localtime(&now), "%d/%m/%y %H:%M:%S");
+	auto localTime = std::localtime(&now);
+	log_date.dayNo = localTime->tm_mday;
+	log_date.monthNo = localTime->tm_mon + 1;
+	return localTime;
+}
+
+Logger& Logger::logTime() {
+	(*this) << std::put_time(getTime(), "%d/%m/%y %H:%M:%S");
 	_flags += L_time;
 	return *this;
-}
-
-int Logger::monthNo() {
-	std::time_t now = std::time(nullptr);
-	return std::localtime(&now)->tm_mon + 1;
-}
-
-int Logger::dayNo() {
-	std::time_t now = std::time(nullptr);
-	return std::localtime(&now)->tm_mday;
 }
 
 ////////////////////////////////////

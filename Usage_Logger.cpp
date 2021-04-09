@@ -1,6 +1,3 @@
-// StdLogger.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include "Logging_console.h"
 #include "Logging_file.h"
 #include "Logging_ram.h"
@@ -21,10 +18,18 @@ namespace logging {
     Logger& two_file_logger() {
         static File_Logger logFile("2File", L_startWithFlushing, flogger());
         return logFile;
+    }    
+    Logger& three_file_logger() {
+        static File_Logger logFile("3File", L_startWithFlushing, two_file_logger());
+        return logFile;
+    }
+    Logger& four_file_logger() {
+        static File_Logger logFile("4File", L_startWithFlushing, three_file_logger());
+        return logFile;
     }
 
     Logger& ram_logger() {
-        static RAM_Logger logFile(5, "Rest", L_allwaysFlush);
+        static RAM_Logger<Console_Logger> logFile(50, "Rest", L_allwaysFlush);
         return logFile;
     }
 }
@@ -58,6 +63,11 @@ int main()
     flogger() << L_time << "Flushed more data" << L_flush;
     flogger() << L_time << L_tabs << "yet" << "more" << "data" << endl;
     two_file_logger() << L_flush << "Start-Two-File" << endl;
+    two_file_logger() << L_time << "Two-File time" << endl;
+    three_file_logger() << L_flush << "Start-three_file_logger" << endl;
+    three_file_logger() << L_time << "three_file_logger time" << endl;
+    four_file_logger() << L_flush << "Start-four_file_logger" << endl;
+    four_file_logger() << L_time << "four_file_logger time" << L_flush;
     ram_logger() << L_flush << "RamFile" << endl;
     ram_logger() << L_time << "Ram data" << endl;
     ram_logger() << L_time << "Flushed Ram data" << L_flush;

@@ -3,8 +3,9 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
-#include <typeinfo>
+#include <time.h>
 #include <version>
+
 #ifdef __cpp_lib_source_location
 #include <source_location>
 #define L_location location()
@@ -39,7 +40,6 @@ namespace logging {
 		void activate(bool makeActive = true) { makeActive ? _flags -= L_null : _flags += L_null; }
 		Flags addFlag(Flags flag) { return _flags += flag; }
 		Flags removeFlag(Flags flag) { return _flags -= flag; }
-
 		virtual void flush() { stream().flush(); _flags -= L_startWithFlushing; }
 		
 		template<typename T>
@@ -60,10 +60,9 @@ namespace logging {
 		}
 
 		virtual std::ostream& stream();
-		virtual std::ostream& mirror_stream();
 
-		static int monthNo();
-		static int dayNo();
+		using ostreamPtr = std::ostream*;
+		virtual Logger* mirror_stream(ostreamPtr& mirrorStream) { mirrorStream = nullptr; return this; }
 
 	protected:
 		Logger(Flags initFlag = L_null) : _flags{ initFlag } {}
@@ -77,6 +76,13 @@ namespace logging {
 		bool has_time() const { return _flags & L_time; }
 
 		virtual Logger& logTime();
+		static tm* getTime();
+
+		struct Log_date {
+			unsigned char dayNo = 0;
+			unsigned char monthNo = 0;
+		} inline static log_date;
+
 		Flags _flags = L_startWithFlushing;
 	};
 	// Streaming template	
@@ -88,13 +94,16 @@ namespace logging {
 	template<typename T>
 	Logger& Logger::log(T value) {
 		if (is_null()) return *this;
-		if (is_tabs()) {
-			mirror_stream() << "\t";
-			stream() << "\t";
-			removeFlag(L_time);
-		}
-		mirror_stream() << value;
-		stream() << value;
+		auto streamPtr = &stream();
+		Logger* logger = this;;
+		do {
+			if (is_tabs()) {
+				(*streamPtr) << "\t";
+			}
+			(*streamPtr) << value;
+			logger = logger->mirror_stream(streamPtr);
+		} while (streamPtr);
+		removeFlag(L_time);
 		return *this;
 	}
 
@@ -108,7 +117,6 @@ namespace logging {
 	inline std::ostream null_ostream{ &null_buff };
 
 	inline std::ostream& Logger::stream() { return null_ostream; }
-	inline std::ostream& Logger::mirror_stream() { return null_ostream; }
 	
 	/// <summary>
 	/// Logs to console - clog(default), cerr or cout.
@@ -119,6 +127,10 @@ namespace logging {
 	public:
 		Console_Logger(Flags initFlags, std::ostream& ostream = std::clog);
 		std::ostream& stream() override { return is_null() ? Logger::stream() : *_ostream; }
+		Logger* mirror_stream(ostreamPtr& mirrorStream) override {
+			if (mirrorStream == _ostream) mirrorStream = nullptr; else mirrorStream = _ostream;
+			return this;
+		}
 	protected:
 		std::ostream* _ostream = 0;
 	};

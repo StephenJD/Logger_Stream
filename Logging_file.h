@@ -6,54 +6,88 @@
 namespace logging {
 
 	/// <summary>
-	/// Logs to file, and mirrors to the provided ostream - typcally cout
+	/// Logs to file, and mirrors to the provided ostream - typcally clog
 	/// New Filenames are generated for each day
 	/// </summary>
-	template<typename baseLogger = Console_Logger>
-	class File_Logger : public baseLogger {
+	template<typename MirrorBase = Console_Logger>
+	class File_Logger : public MirrorBase {
 	public:
 		File_Logger(const std::string& fileNameStem, Flags initFlags, std::ostream& mirrorStream = std::clog);
-		File_Logger(const std::string& fileNameStem, Flags initFlags, Logger& mirrorStream) : File_Logger(fileNameStem, initFlags) { _mirror = &mirrorStream; }
+		File_Logger(const std::string& fileNameStem, Flags initFlags, Logger& mirror_chain) : File_Logger(fileNameStem, initFlags) { _mirror = &mirror_chain; }
+
 		std::ostream& stream() override { open(); return _dataFile; }
-		std::ostream& mirror_stream() override { return _mirror ? _mirror->stream() : baseLogger::stream(); }
-		void flush() override { baseLogger::flush(); _dataFile.flush(); }
+		void flush() override;
+		Logger* mirror_stream(Logger::ostreamPtr& mirrorStream) override;
 		bool open();
+
 	private:
 		Logger& logTime() override;
 		std::string generateFileName();
-		Logger* _mirror = 0;
+		Logger* _mirror = this;
 
 		std::ofstream _dataFile;
 		std::string _fileNameStem;
+		unsigned char _fileDayNo = 0;
 	};
 
-	template<typename baseLogger>
-	File_Logger<baseLogger>::File_Logger(const std::string& fileNameStem, Flags initFlags, std::ostream& mirrorStream)
-		: baseLogger(initFlags, mirrorStream)
+	template<typename MirrorBase>
+	File_Logger<MirrorBase>::File_Logger(const std::string& fileNameStem, Flags initFlags, std::ostream& mirrorStream)
+		: MirrorBase(initFlags, mirrorStream)
 		, _fileNameStem(fileNameStem) {
 		_fileNameStem.erase(4);
-		baseLogger::stream() << "\nFile_Logger: " << _fileNameStem << std::endl;
+		MirrorBase::stream() << "\nFile_Logger: " << _fileNameStem << std::endl;
 	}
 
-	template<typename baseLogger>
-	std::string File_Logger<baseLogger>::generateFileName() {
+	template<typename MirrorBase>
+	std::string File_Logger<MirrorBase>::generateFileName() {
 		auto fileName = std::ostringstream{};
-		fileName << _fileNameStem << std::setfill('0') << std::setw(2) << Logger::monthNo() << std::setw(2) << Logger::dayNo() << ".txt";
+		if (Logger::log_date.dayNo == 0) Logger::getTime();
+		fileName << _fileNameStem << std::setfill('0') << std::setw(2) << (int)Logger::log_date.monthNo << std::setw(2) << (int)Logger::log_date.dayNo << ".txt";
+		_fileDayNo = Logger::log_date.dayNo;
 		return fileName.str();
 	}
 
-	template<typename baseLogger>
-	bool File_Logger<baseLogger>::open() {
+	template<typename MirrorBase>
+	bool File_Logger<MirrorBase>::open() {
+		if (_fileDayNo != Logger::log_date.dayNo) _dataFile.close();
 		if (!_dataFile.is_open()) {
 			_dataFile.open(generateFileName(), std::ios::app);	// Append
 		}
 		return _dataFile.good();
 	}
 
-	template<typename baseLogger>
-	Logger& File_Logger<baseLogger>::logTime() {
-		mirror_stream() << _fileNameStem << " ";
-		baseLogger::logTime();
+	template<typename MirrorBase>
+	Logger& File_Logger<MirrorBase>::logTime() {
+		auto streamPtr = &stream();
+		Logger* logger = mirror_stream(streamPtr);;
+		while (streamPtr) {
+			(*streamPtr) << _fileNameStem << " ";
+			logger = logger->mirror_stream(streamPtr);
+		}
+		MirrorBase::logTime();
 		return *this;
+	}
+
+	template<typename MirrorBase>
+	void File_Logger<MirrorBase>::flush() {
+		auto streamPtr = &stream();
+		Logger* logger = mirror_stream(streamPtr);
+		while (streamPtr && logger != this) {
+			logger->flush();
+			logger = logger->mirror_stream(streamPtr);
+		}
+		MirrorBase::flush();
+		_dataFile.flush();
+	}
+
+	template<typename MirrorBase>
+	Logger* File_Logger<MirrorBase>::mirror_stream(Logger::ostreamPtr& mirrorStream) {
+		bool isChainedMirror = this != _mirror;
+		if (isChainedMirror) {
+			mirrorStream = &_mirror->stream();
+			return _mirror;
+		} else {
+			return MirrorBase::mirror_stream(mirrorStream);;
+		}
 	}
 }

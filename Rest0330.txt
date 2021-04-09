@@ -1,5 +1,0 @@
- |F|
-RamFile
-30/03/21 09:32:22	Ram data
-30/03/21 09:32:22	Flushed Ram data |F|
-30/03/21 09:32:22	yet	more	Ram data |F|

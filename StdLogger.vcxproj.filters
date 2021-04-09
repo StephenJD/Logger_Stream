@@ -18,9 +18,6 @@
     <ClCompile Include="Logging_console.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Logging_ram.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Usage_Logger.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
