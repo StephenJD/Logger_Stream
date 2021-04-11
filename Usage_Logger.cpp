@@ -3,42 +3,37 @@
 #include "Logging_ram.h"
 
 using namespace std;
-using namespace logging;
+
 namespace logging {
+
     Logger& logger() {
-        static Console_Logger std_cout(L_null);
-        return std_cout;
+        static Console_Logger std_log{};
+        return std_log;
     }
 
-    Logger& flogger() {
-        static File_Logger logFile("Test", L_startWithFlushing);
+    Logger& file1_logger() {
+        static File_Logger logFile{ R"(C:\LF1_)", L_flush };
         return logFile;
     }    
     
-    Logger& two_file_logger() {
-        static File_Logger logFile("2File", L_startWithFlushing, flogger());
+    Logger& file2_logger() {
+        static File_Logger logFile{ "LF2_", L_startWithFlushing, file1_logger() };
         return logFile;
     }    
-    Logger& three_file_logger() {
-        static File_Logger logFile("3File", L_startWithFlushing, two_file_logger());
-        return logFile;
-    }
-    Logger& four_file_logger() {
-        static File_Logger logFile("4File", L_startWithFlushing, three_file_logger());
-        return logFile;
-    }
-
+    
     Logger& ram_logger() {
-        static RAM_Logger<Console_Logger> logFile(50, "Rest", L_allwaysFlush);
+        static RAM_Logger<Console_Logger> logFile{ 50, "Ram", L_allwaysFlush };
         return logFile;
     }
 }
 
+using namespace logging;
+
 class Widget {
 public:
-    Widget() { flogger() << "Constructing Widget" << endl; }
+    Widget() { file1_logger() << "Constructing Widget" << endl; }
     int val = 5; 
-} widget;
+} widget{};
 
 Logger& operator <<(Logger& log, const Widget& w) {
     log << "Widget-Object val: " << w.val;
@@ -47,29 +42,22 @@ Logger& operator <<(Logger& log, const Widget& w) {
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    std::cerr << "Hello World!\n";
     logger() << L_time << "Console_Logger is null" << endl;
     logger().activate();
     logger() << "Console_Logger is active\n";
-    logger() << L_location << endl;
+    file1_logger() << "StartFile1" << endl;
+
+    logger() << "Location: " << L_location << endl;
     logger() << "Console_Logger hex " << hex << 700 << L_flush;
-    logger() << "Console_Logger dec " << dec << 700 << std::endl;
+    logger() << "Console_Logger dec " << dec << 700 << endl;
     logger() << "Console_Logger tabs " << L_tabs << dec << 700 << 300 << L_concat << "Done" << endl;
     logger() << "Console_Logger width " << setbase(16) << setw(10) << 10 << setw(5) << 19 << "Done" << endl;
-    logger() << L_time << "Console_Logger time" << endl;
     logger() << L_time << "Console_Logger widget: " << widget << endl;
-    flogger() << L_flush << "StartFile" << endl;
-    flogger() << L_time << "new data" << endl;
-    flogger() << L_time << "Flushed more data" << L_flush;
-    flogger() << L_time << L_tabs << "yet" << "more" << "data" << endl;
-    two_file_logger() << L_flush << "Start-Two-File" << endl;
-    two_file_logger() << L_time << "Two-File time" << endl;
-    three_file_logger() << L_flush << "Start-three_file_logger" << endl;
-    three_file_logger() << L_time << "three_file_logger time" << endl;
-    four_file_logger() << L_flush << "Start-four_file_logger" << endl;
-    four_file_logger() << L_time << "four_file_logger time" << L_flush;
-    ram_logger() << L_flush << "RamFile" << endl;
+    file1_logger() << L_time << "new data" << endl;
+    file1_logger() << L_time << "Flushed more data" << L_flush;
+    file1_logger() << L_time << L_tabs << "yet" << "more" << "data" << endl;
+    file2_logger() << L_flush << "StartFile2" << endl;
+    file2_logger() << L_time << "File2 time" << endl;
     ram_logger() << L_time << "Ram data" << endl;
-    ram_logger() << L_time << "Flushed Ram data" << L_flush;
-    ram_logger() << L_time << L_tabs << "yet" << "more" << "Ram data" << L_flush;
 }

@@ -2,9 +2,10 @@
 #include "Logging_console.h"
 #include <fstream>
 #include <string>
+#include <filesystem>
 
 namespace logging {
-
+	
 	/// <summary>
 	/// Logs to file, and mirrors to the provided ostream - typcally clog
 	/// New Filenames are generated for each day
@@ -12,8 +13,10 @@ namespace logging {
 	template<typename MirrorBase = Console_Logger>
 	class File_Logger : public MirrorBase {
 	public:
-		File_Logger(const std::string& fileNameStem, Flags initFlags, std::ostream& mirrorStream = std::clog);
-		File_Logger(const std::string& fileNameStem, Flags initFlags, Logger& mirror_chain) : File_Logger(fileNameStem, initFlags) { _mirror = &mirror_chain; }
+		static constexpr int FILE_NAME_LENGTH = 8;		
+		File_Logger(const std::filesystem::path& filePath) : File_Logger{ filePath, L_null } {}
+		File_Logger(const std::filesystem::path& filePath, Flags initFlags, std::ostream& mirrorStream = std::clog);
+		File_Logger(const std::filesystem::path& filePath, Flags initFlags, Logger& mirror_chain) : File_Logger{ filePath, initFlags } { _mirror = &mirror_chain; }
 
 		std::ostream& stream() override { open(); return _dataFile; }
 		void flush() override;
@@ -27,24 +30,28 @@ namespace logging {
 
 		std::ofstream _dataFile;
 		std::string _fileNameStem;
+		std::filesystem::path _filePath;
 		unsigned char _fileDayNo = 0;
 	};
 
 	template<typename MirrorBase>
-	File_Logger<MirrorBase>::File_Logger(const std::string& fileNameStem, Flags initFlags, std::ostream& mirrorStream)
-		: MirrorBase(initFlags, mirrorStream)
-		, _fileNameStem(fileNameStem) {
-		_fileNameStem.erase(4);
+	File_Logger<MirrorBase>::File_Logger(const std::filesystem::path& filePath, Flags initFlags, std::ostream& mirrorStream)
+		: MirrorBase{ initFlags, mirrorStream }
+		, _filePath{ filePath } {
+		_fileNameStem = _filePath.filename().string();
+		_fileNameStem.resize(FILE_NAME_LENGTH - 4);
+		if (!_filePath.has_extension()) _filePath += ".txt";
 		MirrorBase::stream() << "\nFile_Logger: " << _fileNameStem << std::endl;
 	}
 
 	template<typename MirrorBase>
 	std::string File_Logger<MirrorBase>::generateFileName() {
-		auto fileName = std::ostringstream{};
 		if (Logger::log_date.dayNo == 0) Logger::getTime();
-		fileName << _fileNameStem << std::setfill('0') << std::setw(2) << (int)Logger::log_date.monthNo << std::setw(2) << (int)Logger::log_date.dayNo << ".txt";
 		_fileDayNo = Logger::log_date.dayNo;
-		return fileName.str();
+		auto fileName = std::stringstream{};
+		fileName << _fileNameStem << std::setfill('0') << std::setw(2) << (int)Logger::log_date.monthNo << std::setw(2) << (int)_fileDayNo;
+		_filePath.replace_filename(fileName.str()) += _filePath.extension();
+		return _filePath.string();
 	}
 
 	template<typename MirrorBase>

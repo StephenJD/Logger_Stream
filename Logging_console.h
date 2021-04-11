@@ -21,16 +21,15 @@ namespace logging {
 #ifdef __cpp_lib_source_location
 	inline std::string location(const std::source_location& location = std::source_location::current()) {
 		auto ss = std::stringstream{};
-		ss << location.file_name() << "("
-			<< location.line() << ":"
-			<< location.column() << ") `"
-			<< location.function_name() << "` " << "\t";
+		ss << location.file_name()
+			<< " : " << location.line()
+			<< " '" << location.function_name() << "'";
 		return ss.str();
 	}
 #else
 	inline std::string location(const char* file, int lineNo) {
 		auto ss = std::stringstream{};
-		ss << file << "\t" << lineNo << "\t";
+		ss << file << "\t" << lineNo;
 		return ss.str();
 	}
 #endif	
@@ -48,7 +47,7 @@ namespace logging {
 		Logger& operator <<(Flags);
 
 		Logger& operator <<(decltype(std::endl<char, std::char_traits<char>>)) {
-			operator <<(L_endl); return *this;
+			return (*this) << L_endl;
 		}
 
 		Logger& operator <<(decltype(std::hex) manip) {
@@ -66,7 +65,7 @@ namespace logging {
 
 	protected:
 		Logger(Flags initFlag = L_null) : _flags{ initFlag } {}
-		Logger(Flags initFlags = L_null, std::ostream& ostream = std::clog) {}
+		Logger(Flags initFlag = L_null, std::ostream& = std::clog) : _flags{ initFlag }  {}
 
 		template<class T> friend Logger& operator <<(Logger& logger, T value);
 
@@ -76,15 +75,16 @@ namespace logging {
 		bool has_time() const { return _flags & L_time; }
 
 		virtual Logger& logTime();
-		static tm* getTime();
 
+		static tm* getTime();
 		struct Log_date {
-			unsigned char dayNo = 0;
-			unsigned char monthNo = 0;
-		} inline static log_date;
+			unsigned char dayNo;
+			unsigned char monthNo;
+		} inline static log_date{ 0,0 };
 
 		Flags _flags = L_startWithFlushing;
 	};
+
 	// Streaming template	
 	template<typename T>
 	Logger& operator <<(Logger& logger, T value) {
@@ -125,7 +125,7 @@ namespace logging {
 	/// </summary>
 	class Console_Logger : public Logger {
 	public:
-		Console_Logger(Flags initFlags, std::ostream& ostream = std::clog);
+		Console_Logger(Flags initFlags = L_null, std::ostream& ostream = std::clog);
 		std::ostream& stream() override { return is_null() ? Logger::stream() : *_ostream; }
 		Logger* mirror_stream(ostreamPtr& mirrorStream) override {
 			if (mirrorStream == _ostream) mirrorStream = nullptr; else mirrorStream = _ostream;
