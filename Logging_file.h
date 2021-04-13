@@ -18,7 +18,8 @@ namespace logging {
 		File_Logger(const std::filesystem::path& filePath, Flags initFlags, std::ostream& mirrorStream = std::clog);
 		File_Logger(const std::filesystem::path& filePath, Flags initFlags, Logger& mirror_chain) : File_Logger{ filePath, initFlags } { _mirror = &mirror_chain; }
 
-		std::ostream& stream() override { open(); return _dataFile; }
+		std::ostream& stream() override;
+
 		void flush() override;
 		Logger* mirror_stream(Logger::ostreamPtr& mirrorStream) override;
 		bool open();
@@ -26,8 +27,8 @@ namespace logging {
 	private:
 		Logger& logTime() override;
 		std::string generateFileName();
-		Logger* _mirror = this;
 
+		Logger* _mirror = this;
 		std::ofstream _dataFile;
 		std::string _fileNameStem;
 		std::filesystem::path _filePath;
@@ -42,6 +43,15 @@ namespace logging {
 		_fileNameStem.resize(FILE_NAME_LENGTH - 4);
 		if (!_filePath.has_extension()) _filePath += ".txt";
 		MirrorBase::stream() << "\nFile_Logger: " << _fileNameStem << std::endl;
+	}
+
+	template<typename MirrorBase>
+	std::ostream& File_Logger<MirrorBase>::stream() {
+		if (MirrorBase::is_cout() || !open()) {
+			Logger::ostreamPtr streamPtr = &_dataFile;
+			Logger* logger = mirror_stream(streamPtr);
+			return *streamPtr;
+		} else return _dataFile;
 	}
 
 	template<typename MirrorBase>
@@ -66,9 +76,9 @@ namespace logging {
 	template<typename MirrorBase>
 	Logger& File_Logger<MirrorBase>::logTime() {
 		auto streamPtr = &stream();
-		Logger* logger = mirror_stream(streamPtr);;
+		Logger* logger = mirror_stream(streamPtr);
 		while (streamPtr) {
-			(*streamPtr) << _fileNameStem << " ";
+			*streamPtr << _fileNameStem << " ";
 			logger = logger->mirror_stream(streamPtr);
 		}
 		MirrorBase::logTime();
@@ -94,7 +104,7 @@ namespace logging {
 			mirrorStream = &_mirror->stream();
 			return _mirror;
 		} else {
-			return MirrorBase::mirror_stream(mirrorStream);;
+			return MirrorBase::mirror_stream(mirrorStream);
 		}
 	}
 }

@@ -47,7 +47,7 @@ namespace logging {
 		Logger& operator <<(Flags);
 
 		Logger& operator <<(decltype(std::endl<char, std::char_traits<char>>)) {
-			return (*this) << L_endl;
+			return *this << L_endl;
 		}
 
 		Logger& operator <<(decltype(std::hex) manip) {
@@ -69,10 +69,10 @@ namespace logging {
 
 		template<class T> friend Logger& operator <<(Logger& logger, T value);
 
-		bool is_tabs() const { return _flags & (L_tabs | L_time); }
+		bool is_tabs() const { return _flags & L_tabs || has_time(); }
 		bool is_null() const { return _flags == L_null; }
 		bool is_cout() const { return _flags & L_cout; }
-		bool has_time() const { return _flags & L_time; }
+		bool has_time() const { return (_flags & 7) == L_time; }
 
 		virtual Logger& logTime();
 
@@ -95,12 +95,12 @@ namespace logging {
 	Logger& Logger::log(T value) {
 		if (is_null()) return *this;
 		auto streamPtr = &stream();
-		Logger* logger = this;;
+		Logger* logger = this;
 		do {
 			if (is_tabs()) {
-				(*streamPtr) << "\t";
+				*streamPtr << "\t";
 			}
-			(*streamPtr) << value;
+			*streamPtr << value;
 			logger = logger->mirror_stream(streamPtr);
 		} while (streamPtr);
 		removeFlag(L_time);

@@ -12,15 +12,15 @@ Logger & Logger::operator <<(Flags flag) {
 	case L_time:	logTime(); break;
 	case L_flush: 
 		_flags = static_cast<Flags>(_flags & L_allwaysFlush); // all zero's except L_allwaysFlush if set.
-		(*this) << " |F|\n"; 
+		*this << " |F|\n"; 
 		flush();
 		break;
 	case L_endl: {
-			if (_flags & L_allwaysFlush) { (*this) << " |F|"; } else if (_flags == L_startWithFlushing) { (*this) << " |SF|"; }
+			if (_flags & L_allwaysFlush) { *this << " |F|"; } else if (_flags == L_startWithFlushing) { *this << " |SF|"; }
 			auto streamPtr = &stream();
 			Logger* logger = this;
 			do {
-				(*streamPtr) << "\n";
+				*streamPtr << "\n";
 				logger = logger->mirror_stream(streamPtr);
 			} while (streamPtr);
 			if (_flags & L_allwaysFlush || _flags == L_startWithFlushing) flush();
@@ -48,7 +48,7 @@ tm* Logger::getTime() {
 }
 
 Logger& Logger::logTime() {
-	(*this) << std::put_time(getTime(), "%d/%m/%y %H:%M:%S");
+	*this << std::put_time(getTime(), "%d/%m/%y %H:%M:%S");
 	_flags += L_time;
 	return *this;
 }

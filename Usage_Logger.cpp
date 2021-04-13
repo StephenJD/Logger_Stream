@@ -12,7 +12,7 @@ namespace logging {
     }
 
     Logger& file1_logger() {
-        static File_Logger logFile{ R"(C:\LF1_)", L_flush };
+        static File_Logger logFile{ "LF1_", L_flush };
         return logFile;
     }    
     
@@ -55,6 +55,7 @@ int main()
     logger() << "Console_Logger width " << setbase(16) << setw(10) << 10 << setw(5) << 19 << "Done" << endl;
     logger() << L_time << "Console_Logger widget: " << widget << endl;
     file1_logger() << L_time << "new data" << endl;
+    file1_logger() << L_cout << L_time << "only to console" << endl;
     file1_logger() << L_time << "Flushed more data" << L_flush;
     file1_logger() << L_time << L_tabs << "yet" << "more" << "data" << endl;
     file2_logger() << L_flush << "StartFile2" << endl;
