@@ -4,8 +4,7 @@
 #include <Arduino.h>
 #include <Type_Traits.h>
 #include <Conversions.h>
-//#include <Streaming.h>
-//#pragma message( "Logging.h loaded" )
+
 /*
 To reduce timeout on missing SD card from 2s to 7mS modify Sd2Card.cpp:
 In Sd2Card::init() on first timeout:  while ((status_ = cardCommand(CMD0, 0)) != R1_IDLE_STATE) {...
@@ -17,10 +16,11 @@ SD.h/.cpp modified to provide sd_exists();
 #define BIN 2
 */
 	class EEPROMClass;
-	EEPROMClass & eeprom();
+	EEPROMClass& eeprom();
 	class Clock;
 
-	enum Flags {L_clearFlags, L_dec, L_int, L_concat, L_endl, L_time, L_flush, L_startWithFlushing, L_null = 255, L_cout = 8, L_hex = 16, L_fixed = 32, L_tabs = 64, L_allwaysFlush = 128 };
+namespace arduino_logger {
+	enum Flags { L_clearFlags, L_dec, L_int, L_concat, L_endl, L_time, L_flush, L_startWithFlushing, L_null = 255, L_cout = 8, L_hex = 16, L_fixed = 32, L_tabs = 64, L_allwaysFlush = 128 };
 	inline Flags operator +=(Flags& l_flag, Flags r_flag) { return l_flag = static_cast<Flags>(l_flag | r_flag); }
 	inline Flags operator -=(Flags& l_flag, Flags r_flag) { return l_flag = static_cast<Flags>(l_flag & ~r_flag); }
 
@@ -31,15 +31,15 @@ SD.h/.cpp modified to provide sd_exists();
 		Flags removeFlag(Flags flag) { _flags -= flag; return _flags; }
 		virtual void flush() { _flags -= L_startWithFlushing; }
 		virtual Print& stream() { return *this; }
-		
+
 		template<typename T>
 		Logger& log(T value);
 
 		virtual bool isWorking() { return true; }
 		virtual void readAll() {}
-		virtual void begin(uint32_t baudRate = 0) {	flush(); }
-		Logger & operator <<(Flags);
-		
+		virtual void begin(uint32_t baudRate = 0) { flush(); }
+		Logger& operator <<(Flags);
+
 		template<class T>
 		void streamToPrintInt(Print* stream, T value) {
 			if (is_fixed()) toFixed(value);
@@ -58,25 +58,25 @@ SD.h/.cpp modified to provide sd_exists();
 
 	protected:
 		Logger(Flags initFlag = L_null) : _flags{ initFlag } {}
-		Logger(Clock & clock, Flags initFlag = L_null);
-		Logger(const char * fileNameStem, uint32_t baudRate, Clock & clock, Flags initFlag = L_null) {}
+		Logger(Clock& clock, Flags initFlag = L_null);
+		Logger(const char* fileNameStem, uint32_t baudRate, Clock& clock, Flags initFlag = L_null) {}
 
 		virtual Logger& logTime();
 
 		size_t write(uint8_t) override { return 1; }
-		size_t write(const uint8_t *buffer, size_t size) override { return size; }
+		size_t write(const uint8_t* buffer, size_t size) override { return size; }
 
-		template<class T> friend Logger & operator <<(Logger & stream, T value);
-		
+		template<class T> friend Logger& operator <<(Logger& stream, T value);
+
 		bool is_tabs() const { return _flags & L_tabs || has_time(); }
 		bool is_null() const { return _flags == L_null; }
 		bool is_cout() const { return _flags & L_cout; }
 		bool has_time() const { return (_flags & 7) == L_time; }
 		bool is_fixed() const { return _flags & L_fixed; }
-		int base() {return _flags & L_hex ? HEX : DEC;}
-		Logger & toFixed(int decimal);
+		int base() { return _flags & L_hex ? HEX : DEC; }
+		Logger& toFixed(int decimal);
 
-		Clock * _clock = 0;
+		Clock* _clock = 0;
 		Flags _flags = L_startWithFlushing;
 	};
 
@@ -112,28 +112,28 @@ SD.h/.cpp modified to provide sd_exists();
 		void begin(uint32_t baudRate) override;
 		bool mirror_stream(ostreamPtr& mirrorStream) override {
 			if (mirrorStream == &Serial) mirrorStream = nullptr; else mirrorStream = &Serial;
-			return mirrorStream == &Serial ? true : false; 
+			return mirrorStream == &Serial ? true : false;
 		}
 	protected:
 		size_t write(uint8_t) override;
 		size_t write(const uint8_t* buffer, size_t size) override;
 	};
 
-	/*/// <summary>
+	/*
+	/// <summary>
 	/// Per msg: 100uS Due/ 700uS Mega
 	/// Save 1KB to SD: 250mS Due / 150mS Mega
 	/// </summary>
-	class RAM_Logger : public Logger {
+	template<typename MirrorBase = Logger>
+	class RAM_Logger : public File_Logger<MirrorBase> {
 	public:
-		RAM_Logger(const char * fileNameStem, uint16_t ramFile_size, bool keepSaving, Clock & clock);
-		RAM_Logger(const char * fileNameStem, uint16_t ramFile_size, bool keepSaving);
+		RAM_Logger(uint16_t ramFile_size,const char * fileNameStem, uint32_t baudRate, Clock & clock, bool keepSaving, Flags initFlags);
+		RAM_Logger(uint16_t ramFile_size,const char * fileNameStem, uint32_t baudRate, bool keepSaving, Flags initFlags);
+		Print& stream() override { return Serial; }
+		void flush() override;
+	private:
 		size_t write(uint8_t) override;
 		size_t write(const uint8_t *buffer, size_t size) override;
-		void readAll() override;
-	private:
-		Logger & logTime() override;
-		bool is_tabs() override { return _ram_mustTabTime ? (_ram_mustTabTime = false, true) : _flags & L_tabs; }
-		bool _ram_mustTabTime = false;
 		uint8_t * _ramFile = 0;
 		char _fileNameStem[5];
 		uint16_t _ramFile_size;
@@ -141,7 +141,75 @@ SD.h/.cpp modified to provide sd_exists();
 		bool _keepSaving;
 	};
 
-	/// <summary>
+	template<typename MirrorBase = Logger>
+	RAM_Logger<MirrorBase>::RAM_Logger(uint16_t ramFile_size, const char* fileNameStem, uint32_t baudRate, Clock& clock, bool keepSaving, Flags initFlags)
+		: File_Logger<MirrorBase>{ fileNameStem, baudRate, clock, initFlags }
+		, _ramFile(new uint8_t[ramFile_size])
+		, _ramFile_size(ramFile_size)
+		, _keepSaving(keepSaving) 	{
+		*_ramFile = 0u;
+	}
+
+	template<typename MirrorBase = Logger>
+	RAM_Logger<MirrorBase>::RAM_Logger(uint16_t ramFile_size, const char* fileNameStem, uint32_t baudRate, bool keepSaving, Flags initFlags)
+		: File_Logger<MirrorBase>{ fileNameStem, baudRate, initFlags }
+		, _ramFile(new uint8_t[ramFile_size])
+		, _ramFile_size(ramFile_size)
+		, _keepSaving(keepSaving) 	{
+		*_ramFile = 0u;
+	}
+
+	template<typename MirrorBase = Logger>
+	size_t RAM_Logger<MirrorBase>::write(uint8_t chr) {
+		if (_filePos >= _ramFile_size) {
+			if (_keepSaving) flush();
+			_filePos = 0;
+		}
+
+		_ramFile[_filePos + 1] = 0u;
+		_ramFile[_filePos] = chr;
+		++_filePos;
+		return 1;
+	}
+
+	template<typename MirrorBase = Logger>
+	size_t RAM_Logger<MirrorBase>::write(const uint8_t* buffer, size_t size) {
+		if (_filePos + size >= _ramFile_size) {
+			while (++_filePos < _ramFile_size) {
+				_ramFile[_filePos] = 0u;
+			}
+			if (_keepSaving) flush();
+			_filePos = 0;
+		}
+
+		auto endPos = buffer + size;
+		_ramFile[_filePos + size] = 0u;
+		for (; buffer < endPos; ++_filePos, ++buffer) {
+			_ramFile[_filePos] = *buffer;
+		}
+		return size;
+	}
+
+	template<typename MirrorBase = Logger>
+	void RAM_Logger<MirrorBase>::flush() {
+		auto start = millis();
+		if (SD.begin(chipSelect)) {
+			auto _dataFile = SD.open(generateFileName(_fileNameStem, _clock), FILE_WRITE); // appends to file
+			// Write from _filePos to end
+			Serial.print((const char*)(_ramFile + _filePos + 1));
+			_dataFile.print((const char*)(_ramFile + _filePos + 1));
+			//Serial.println("\n * from start * ");
+			// Write from 0 to _filePos
+			Serial.print((const char*)(_ramFile));
+			_dataFile.print((const char*)(_ramFile));
+
+			Serial.println("\nClose");
+			_dataFile.close();
+		}
+		Serial.print("Ram Save took mS "); Serial.println(millis() - start);
+	}
+*/
+/*	/// <summary>
 	/// Per msg: 115mS Due/ 170mS Mega
 	/// Save 1KB to SD: 660mS Due / 230mS Mega
 	/// </summary>
@@ -195,29 +263,25 @@ SD.h/.cpp modified to provide sd_exists();
 
 #ifdef ZPSIM
 #include <fstream>
-	/// <summary>
-	/// Per un-timed msg: 1.4mS
-	/// Per timed msg: 3mS
-	/// </summary>	
 	template<typename MirrorBase = Serial_Logger>
 	class File_Logger : public MirrorBase {
 	public:
-		static constexpr int FILE_NAME_LENGTH = 8;		
-		File_Logger(const char * fileNameStem, uint32_t baudRate, Clock & clock, Flags initFlags = L_flush);
-		File_Logger(const char * fileNameStem, uint32_t baudRate, Flags initFlags = L_flush);
+		static constexpr int FILE_NAME_LENGTH = 8;
+		File_Logger(const char* fileNameStem, uint32_t baudRate, Clock& clock, Flags initFlags = L_flush);
+		File_Logger(const char* fileNameStem, uint32_t baudRate, Flags initFlags = L_flush);
 		Print& stream() override;
 		void flush() override { close(); MirrorBase::flush(); }
 		bool mirror_stream(Logger::ostreamPtr& mirrorStream) override { return MirrorBase::mirror_stream(mirrorStream); }
-	
+
 		bool open();
 		bool isWorking() override;
 		void close() /*override*/ { _dataFile.close(); }
 	protected:
-		Logger & logTime() override;
+		Logger& logTime() override;
 		GP_LIB::CStr_20 generateFileName();
 
 		size_t write(uint8_t) override;
-		size_t write(const uint8_t *buffer, size_t size) override;
+		size_t write(const uint8_t* buffer, size_t size) override;
 
 		Logger* _mirror = this;
 		std::ofstream _dataFile;
@@ -230,7 +294,7 @@ SD.h/.cpp modified to provide sd_exists();
 	////////////////////////////////////
 
 	template<typename MirrorBase>
-	File_Logger<MirrorBase>::File_Logger(const char* fileNameStem, uint32_t baudRate, Flags initFlags) 
+	File_Logger<MirrorBase>::File_Logger(const char* fileNameStem, uint32_t baudRate, Flags initFlags)
 		: MirrorBase(baudRate, initFlags) {
 		strncpy(_fileNameStem, fileNameStem, 5);
 		_fileNameStem[4] = 0;
@@ -255,9 +319,9 @@ SD.h/.cpp modified to provide sd_exists();
 	bool File_Logger<MirrorBase>::isWorking() { return true; }
 
 	template<typename MirrorBase>
-	Print& File_Logger<MirrorBase>::stream() { 
+	Print& File_Logger<MirrorBase>::stream() {
 		if (File_Logger<MirrorBase>::is_cout() || !open()) return MirrorBase::stream();
-		else return *this; 
+		else return *this;
 	}
 
 	template<typename MirrorBase>
@@ -307,4 +371,5 @@ SD.h/.cpp modified to provide sd_exists();
 
 #endif
 
-	Logger & logger(); // to be defined by the client
+	Logger& logger(); // to be defined by the client
+}

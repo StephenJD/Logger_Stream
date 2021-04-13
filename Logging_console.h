@@ -34,6 +34,11 @@ namespace logging {
 	}
 #endif	
 
+//#ifndef Streamable
+//#define Streamable std::ostream
+//#endif
+	using Streamable = std::ostream;
+
 	class Logger {
 	public:
 		void activate(bool makeActive = true) { makeActive ? _flags -= L_null : _flags += L_null; }
@@ -58,14 +63,14 @@ namespace logging {
 			stream() << manip; return *this;
 		}
 
-		virtual std::ostream& stream();
+		virtual Streamable& stream();
 
-		using ostreamPtr = std::ostream*;
+		using ostreamPtr = Streamable*;
 		virtual Logger* mirror_stream(ostreamPtr& mirrorStream) { mirrorStream = nullptr; return this; }
 
 	protected:
 		Logger(Flags initFlag = L_null) : _flags{ initFlag } {}
-		Logger(Flags initFlag = L_null, std::ostream& = std::clog) : _flags{ initFlag }  {}
+		Logger(Flags initFlag = L_null, Streamable& = std::clog) : _flags{ initFlag }  {}
 
 		template<class T> friend Logger& operator <<(Logger& logger, T value);
 
@@ -114,9 +119,9 @@ namespace logging {
 		int_type overflow(int_type) override { return std::char_traits<char>::not_eof(0); }
 	} inline null_buff{};
 
-	inline std::ostream null_ostream{ &null_buff };
+	inline Streamable null_ostream{ &null_buff };
 
-	inline std::ostream& Logger::stream() { return null_ostream; }
+	inline Streamable& Logger::stream() { return null_ostream; }
 	
 	/// <summary>
 	/// Logs to console - clog(default), cerr or cout.
@@ -125,14 +130,14 @@ namespace logging {
 	/// </summary>
 	class Console_Logger : public Logger {
 	public:
-		Console_Logger(Flags initFlags = L_null, std::ostream& ostream = std::clog);
-		std::ostream& stream() override { return is_null() ? Logger::stream() : *_ostream; }
+		Console_Logger(Flags initFlags = L_null, Streamable& ostream = std::clog);
+		Streamable& stream() override { return is_null() ? Logger::stream() : *_ostream; }
 		Logger* mirror_stream(ostreamPtr& mirrorStream) override {
 			if (mirrorStream == _ostream) mirrorStream = nullptr; else mirrorStream = _ostream;
 			return this;
 		}
 	protected:
-		std::ostream* _ostream = 0;
+		Streamable* _ostream = 0;
 	};
 
 	Logger& logger(); // to be defined by the client

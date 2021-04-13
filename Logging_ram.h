@@ -31,17 +31,17 @@ namespace logging {
 	template<typename MirrorBase = Logger>
 	class RAM_Logger : public File_Logger<MirrorBase> {
 	public:
-		RAM_Logger(uint16_t ramFile_size, const std::string& fileNameStem, Flags initFlags, std::ostream& ostream = std::clog);
-		std::ostream& stream() override { return _stream; }
+		RAM_Logger(uint16_t ramFile_size, const std::string& fileNameStem, Flags initFlags, Streamable& ostream = std::clog);
+		Streamable& stream() override { return _stream; }
 		void flush() override;
 	private:
 		std::unique_ptr<char[]> _ramFile;
 		Ram_Buffer _ramBuffer;
-		std::ostream _stream;
+		Streamable _stream;
 	};
 
 	template<typename MirrorBase>
-	RAM_Logger<MirrorBase>::RAM_Logger(uint16_t ramFile_size, const std::string& fileNameStem, Flags initFlags, std::ostream& ostream)
+	RAM_Logger<MirrorBase>::RAM_Logger(uint16_t ramFile_size, const std::string& fileNameStem, Flags initFlags, Streamable& ostream)
 		: File_Logger<MirrorBase>{ fileNameStem, initFlags, ostream }
 		, _ramFile{ std::make_unique<char[]>(ramFile_size) }
 		, _ramBuffer{ _ramFile.get(), ramFile_size, *this }

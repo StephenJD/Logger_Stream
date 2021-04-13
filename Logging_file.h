@@ -15,10 +15,10 @@ namespace logging {
 	public:
 		static constexpr int FILE_NAME_LENGTH = 8;		
 		File_Logger(const std::filesystem::path& filePath) : File_Logger{ filePath, L_null } {}
-		File_Logger(const std::filesystem::path& filePath, Flags initFlags, std::ostream& mirrorStream = std::clog);
+		File_Logger(const std::filesystem::path& filePath, Flags initFlags, Streamable& mirrorStream = std::clog);
 		File_Logger(const std::filesystem::path& filePath, Flags initFlags, Logger& mirror_chain) : File_Logger{ filePath, initFlags } { _mirror = &mirror_chain; }
 
-		std::ostream& stream() override;
+		Streamable& stream() override;
 
 		void flush() override;
 		Logger* mirror_stream(Logger::ostreamPtr& mirrorStream) override;
@@ -36,7 +36,7 @@ namespace logging {
 	};
 
 	template<typename MirrorBase>
-	File_Logger<MirrorBase>::File_Logger(const std::filesystem::path& filePath, Flags initFlags, std::ostream& mirrorStream)
+	File_Logger<MirrorBase>::File_Logger(const std::filesystem::path& filePath, Flags initFlags, Streamable& mirrorStream)
 		: MirrorBase{ initFlags, mirrorStream }
 		, _filePath{ filePath } {
 		_fileNameStem = _filePath.filename().string();
@@ -46,7 +46,7 @@ namespace logging {
 	}
 
 	template<typename MirrorBase>
-	std::ostream& File_Logger<MirrorBase>::stream() {
+	Streamable& File_Logger<MirrorBase>::stream() {
 		if (MirrorBase::is_cout() || !open()) {
 			Logger::ostreamPtr streamPtr = &_dataFile;
 			Logger* logger = mirror_stream(streamPtr);

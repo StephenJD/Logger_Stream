@@ -21,32 +21,32 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{31b18c12-82c1-40d8-9671-9478fc0ef0c5}</ProjectGuid>
+    <ProjectGuid>{5A6C3C0A-F065-43C7-8EE1-53263A0CB7BA}</ProjectGuid>
     <RootNamespace>Arduino</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -89,6 +89,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;ZPSIM 1;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\VS_Projects\NewHeatingSystem\Arduino;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Bitfield;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Clock;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Conversions;$(SolutionDir)..\..\HeatingSystemSketch\libraries\DateTime\src;$(SolutionDir)..\..\HeatingSystemSketch\libraries\EEPROM;$(SolutionDir)..\..\HeatingSystemSketch\libraries\FlashStrings;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_Talk;$(SolutionDir)..\..\HeatingSystemSketch\libraries\PinObject;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Sum_Operators;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Timer_mS_uS;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Type_Traits;$(SolutionDir)Arduino_Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -104,6 +105,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\VS_Projects\NewHeatingSystem\Arduino;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Bitfield;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Clock;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Conversions;$(SolutionDir)..\..\HeatingSystemSketch\libraries\DateTime\src;$(SolutionDir)..\..\HeatingSystemSketch\libraries\EEPROM;$(SolutionDir)..\..\HeatingSystemSketch\libraries\FlashStrings;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_Talk;$(SolutionDir)..\..\HeatingSystemSketch\libraries\PinObject;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Sum_Operators;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Timer_mS_uS;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Type_Traits;$(SolutionDir)Arduino_Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,6 +121,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\VS_Projects\NewHeatingSystem\Arduino;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Bitfield;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Clock;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Conversions;$(SolutionDir)..\..\HeatingSystemSketch\libraries\DateTime\src;$(SolutionDir)..\..\HeatingSystemSketch\libraries\EEPROM;$(SolutionDir)..\..\HeatingSystemSketch\libraries\FlashStrings;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_Talk;$(SolutionDir)..\..\HeatingSystemSketch\libraries\PinObject;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Sum_Operators;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Timer_mS_uS;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Type_Traits;$(SolutionDir)Arduino_Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,6 +137,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)..\..\VS_Projects\NewHeatingSystem\Arduino;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Bitfield;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Clock;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Conversions;$(SolutionDir)..\..\HeatingSystemSketch\libraries\DateTime\src;$(SolutionDir)..\..\HeatingSystemSketch\libraries\EEPROM;$(SolutionDir)..\..\HeatingSystemSketch\libraries\FlashStrings;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_Talk;$(SolutionDir)..\..\HeatingSystemSketch\libraries\PinObject;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Sum_Operators;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Timer_mS_uS;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Type_Traits;$(SolutionDir)Arduino_Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -157,6 +161,7 @@
     <ClCompile Include="..\..\..\NewHeatingSystem\Arduino\SD.cpp" />
     <ClCompile Include="..\..\..\NewHeatingSystem\Arduino\Serial.cpp" />
     <ClCompile Include="..\..\..\NewHeatingSystem\Arduino\Wire.cpp" />
+    <ClCompile Include="..\Arduino_Logger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\HeatingSystemSketch\libraries\Clock\Clock.h" />
@@ -180,6 +185,7 @@
     <ClInclude Include="..\..\..\NewHeatingSystem\Arduino\targetver.h" />
     <ClInclude Include="..\..\..\NewHeatingSystem\Arduino\Wire.h" />
     <ClInclude Include="..\..\..\NewHeatingSystem\Arduino\WString.h" />
+    <ClInclude Include="..\Stream_Arduino.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
