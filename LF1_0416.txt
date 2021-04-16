@@ -14,3 +14,11 @@ StartFile1
  |F|
 StartFile2
 LF2_ 16/04/21 12:06:02	File2 time
+Constructing Widget
+StartFile1
+16/04/21 12:31:12	new data
+16/04/21 12:31:12	Flushed more data |F|
+16/04/21 12:31:12	yet	more	data
+ |F|
+StartFile2
+LF2_ 16/04/21 12:31:12	File2 time

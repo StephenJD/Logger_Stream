@@ -10,10 +10,10 @@ namespace logging {
 	public:
 		static constexpr int FILE_NAME_LENGTH = 8;
 		FileNameGenerator(const std::filesystem::path& filePath);
+		std::string stem() const { return _fileNameStem; }
+		bool isNewDay(Logger& logger) const { return _fileDayNo != logger.log_date.dayNo; }
+		int dayNo() const { return _fileDayNo; }
 		std::string operator()(Logger& logger);
-		std::string stem() { return _fileNameStem; }
-		bool isNewDay(Logger& logger) { return _fileDayNo != logger.log_date.dayNo; }
-		int dayNo() { return _fileDayNo; }
 	private:
 		std::string _fileNameStem;
 		std::filesystem::path _filePath;
@@ -32,7 +32,6 @@ namespace logging {
 		File_Logger(const std::filesystem::path& filePath, Flags initFlags, Logger& mirror_chain) : File_Logger{ filePath, initFlags } { _mirror = &mirror_chain; }
 
 		Streamable& stream() override;
-
 		void flush() override;
 		Logger* mirror_stream(Logger::ostreamPtr& mirrorStream) override;
 		bool open() override;
@@ -57,7 +56,7 @@ namespace logging {
 	Streamable& File_Logger<MirrorBase>::stream() {
 		if (MirrorBase::is_cout() || !open()) {
 			Logger::ostreamPtr streamPtr = &_dataFile;
-			Logger* logger = mirror_stream(streamPtr);
+			mirror_stream(streamPtr);
 			return *streamPtr;
 		} else return _dataFile;
 	}

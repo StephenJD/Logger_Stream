@@ -66,16 +66,10 @@ namespace logging {
 		using ostreamPtr = Streamable*;
 		virtual Logger* mirror_stream(ostreamPtr& mirrorStream) { mirrorStream = nullptr; return this; }
 
-		struct Log_date {
-			unsigned char dayNo;
-			unsigned char monthNo;
-		} inline static log_date{ 0,0 };
-		static tm* getTime();
-
 	protected:
 		Logger(Flags initFlag = L_null) : _flags{ initFlag } {}
 		Logger(Flags initFlag = L_null, Streamable& = std::clog) : _flags{ initFlag }  {}
-		
+	
 		virtual Logger& logTime();
 
 		template<class T> friend Logger& operator <<(Logger& logger, T value);
@@ -84,6 +78,13 @@ namespace logging {
 		bool is_null() const { return _flags == L_null; }
 		bool is_cout() const { return _flags & L_cout; }
 		bool has_time() const { return (_flags & 7) == L_time; }
+
+		friend class FileNameGenerator;
+		static tm* getTime();
+		struct Log_date {
+			unsigned char dayNo;
+			unsigned char monthNo;
+		} inline static log_date{ 0,0 };
 
 		Flags _flags = L_startWithFlushing;
 	};
