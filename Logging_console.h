@@ -34,9 +34,6 @@ namespace logging {
 	}
 #endif	
 
-//#ifndef Streamable
-//#define Streamable std::ostream
-//#endif
 	using Streamable = std::ostream;
 
 	class Logger {
@@ -45,7 +42,8 @@ namespace logging {
 		Flags addFlag(Flags flag) { return _flags += flag; }
 		Flags removeFlag(Flags flag) { return _flags -= flag; }
 		virtual void flush() { stream().flush(); _flags -= L_startWithFlushing; }
-		
+		virtual bool open() { return false; }
+
 		template<typename T>
 		Logger& log(T value);
 
@@ -68,9 +66,17 @@ namespace logging {
 		using ostreamPtr = Streamable*;
 		virtual Logger* mirror_stream(ostreamPtr& mirrorStream) { mirrorStream = nullptr; return this; }
 
+		struct Log_date {
+			unsigned char dayNo;
+			unsigned char monthNo;
+		} inline static log_date{ 0,0 };
+		static tm* getTime();
+
 	protected:
 		Logger(Flags initFlag = L_null) : _flags{ initFlag } {}
 		Logger(Flags initFlag = L_null, Streamable& = std::clog) : _flags{ initFlag }  {}
+		
+		virtual Logger& logTime();
 
 		template<class T> friend Logger& operator <<(Logger& logger, T value);
 
@@ -78,14 +84,6 @@ namespace logging {
 		bool is_null() const { return _flags == L_null; }
 		bool is_cout() const { return _flags & L_cout; }
 		bool has_time() const { return (_flags & 7) == L_time; }
-
-		virtual Logger& logTime();
-
-		static tm* getTime();
-		struct Log_date {
-			unsigned char dayNo;
-			unsigned char monthNo;
-		} inline static log_date{ 0,0 };
 
 		Flags _flags = L_startWithFlushing;
 	};
@@ -130,7 +128,11 @@ namespace logging {
 	/// </summary>
 	class Console_Logger : public Logger {
 	public:
-		Console_Logger(Flags initFlags = L_null, Streamable& ostream = std::clog);
+		Console_Logger(Flags initFlags = L_null, Streamable& ostream = std::clog) 
+			: Logger{ initFlags, ostream }
+			, _ostream{ &ostream } {
+			ostream.flush();
+		}
 		Streamable& stream() override { return is_null() ? Logger::stream() : *_ostream; }
 		Logger* mirror_stream(ostreamPtr& mirrorStream) override {
 			if (mirrorStream == _ostream) mirrorStream = nullptr; else mirrorStream = _ostream;

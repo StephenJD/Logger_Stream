@@ -52,12 +52,3 @@ Logger& Logger::logTime() {
 	_flags += L_time;
 	return *this;
 }
-
-////////////////////////////////////
-//            Console_Logger         //
-////////////////////////////////////
-
-Console_Logger::Console_Logger(Flags initFlags, ostream& ostream) : Logger{ initFlags, ostream }, _ostream{ &ostream } {
-	ostream.flush();
-}
-
