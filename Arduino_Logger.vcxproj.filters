@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Logging_console.cpp">
+    <ClCompile Include="Arduino_Stream\Arduino_Logger_Usage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Arduino_Stream\Arduino_StreamLogger.cpp">
+    <ClCompile Include="Arduino_Logger\Arduino_Logging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -26,10 +26,7 @@
     <ClInclude Include="Arduino_Stream\Stream_Arduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Logging_console.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Arduino_Logger\Logging.h">
+    <ClInclude Include="Arduino_Logger\Arduino_Logging.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

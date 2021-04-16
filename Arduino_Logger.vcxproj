@@ -147,13 +147,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Arduino_Stream\Arduino_StreamLogger.cpp" />
-    <ClCompile Include="Logging_console.cpp" />
+    <ClCompile Include="Arduino_Logger\Arduino_Logging.cpp" />
+    <ClCompile Include="Arduino_Stream\Arduino_Logger_Usage.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Arduino_Logger\Logging.h" />
+    <ClInclude Include="Arduino_Logger\Arduino_Logging.h" />
     <ClInclude Include="Arduino_Stream\Stream_Arduino.h" />
-    <ClInclude Include="Logging_console.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Arduino_Logger\Arduino\Arduino.vcxproj">
