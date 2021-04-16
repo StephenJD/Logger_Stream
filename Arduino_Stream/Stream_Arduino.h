@@ -3,11 +3,18 @@
 #include <Type_Traits.h>
 #include <Conversions.h>
 
+//#define OStream Stream_Arduino
+
 	class Stream_Arduino : public Print {
 	public:
+		enum Base {dec = DEC, hex = HEX};
+		Stream_Arduino& operator <<(Base base) { _base = base; return *this; }
+		void flush() { Serial.flush(); }
+		bool good() { return bool(Serial); }
+
 		template<class T>
 		void streamToPrintInt(Print* stream, T value) {
-			stream->print(value);
+			stream->print(value, _base);
 		}
 
 		template<class T>
@@ -21,11 +28,12 @@
 		size_t write(const uint8_t *buffer, size_t size) override { return size; }
 
 		template<class T> friend Stream_Arduino& operator <<(Stream_Arduino& stream, T value);
-	};
+		Base _base = dec;
+	} inline stream_arduino{};
 
 	// Streaming template	
 	template<typename T>
 	Stream_Arduino& operator <<(Stream_Arduino& stream, T value) {
-		streamToPrint(stream, value, typename typetraits::_Is_integer<T>::_Integral());
-		return *this;
+		stream.streamToPrint(&stream, value, typename typetraits::_Is_integer<T>::_Integral());
+		return stream;
 	}

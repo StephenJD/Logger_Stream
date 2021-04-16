@@ -57,6 +57,9 @@
     <ClCompile Include="..\..\..\..\HeatingSystemSketch\libraries\Timer_mS_uS\Timer_mS_uS.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\HeatingSystemSketch\libraries\Logging\Logging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\NewHeatingSystem\Arduino\Arduino.h">
@@ -120,6 +123,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\HeatingSystemSketch\libraries\Timer_mS_uS\Timer_mS_uS.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\HeatingSystemSketch\libraries\Logging\Logging.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;ZPSIM 1;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)\Arduino_Logger;$(SolutionDir)..\..\VS_Projects\NewHeatingSystem\Arduino;$(SolutionDir)..\..\HeatingSystemSketch\libraries\BitField;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Clock;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Conversions;$(SolutionDir)..\..\HeatingSystemSketch\libraries\DateTime/src;$(SolutionDir)..\..\HeatingSystemSketch\libraries\EEPROM;$(SolutionDir)..\..\HeatingSystemSketch\libraries\FlashStrings;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_eeprom;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_Talk;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_Talk/I2C_Device;$(SolutionDir)..\..\HeatingSystemSketch\libraries\MemoryFree;$(SolutionDir)..\..\HeatingSystemSketch\libraries\PinObject;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Type_Traits;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Sum_Operators;$(ProjectDir)\Arduino_Stream;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Arduino_Logger;$(SolutionDir)..\..\VS_Projects\NewHeatingSystem\Arduino;$(SolutionDir)..\..\HeatingSystemSketch\libraries\BitField;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Clock;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Conversions;$(SolutionDir)..\..\HeatingSystemSketch\libraries\DateTime/src;$(SolutionDir)..\..\HeatingSystemSketch\libraries\EEPROM;$(SolutionDir)..\..\HeatingSystemSketch\libraries\FlashStrings;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_eeprom;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_Talk;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_Talk/I2C_Device;$(SolutionDir)..\..\HeatingSystemSketch\libraries\MemoryFree;$(SolutionDir)..\..\HeatingSystemSketch\libraries\PinObject;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Type_Traits;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Sum_Operators;$(SolutionDir)Arduino_Stream;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -147,8 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Arduino_Logger\Arduino_Logger.cpp" />
-    <ClCompile Include="Arduino_Logger\Logging.cpp" />
+    <ClCompile Include="Arduino_Stream\Arduino_StreamLogger.cpp" />
     <ClCompile Include="Logging_console.cpp" />
   </ItemGroup>
   <ItemGroup>

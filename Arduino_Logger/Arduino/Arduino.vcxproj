@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;ZPSIM 1;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\..\VS_Projects\NewHeatingSystem\Arduino;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Bitfield;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Clock;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Conversions;$(SolutionDir)..\..\HeatingSystemSketch\libraries\DateTime\src;$(SolutionDir)..\..\HeatingSystemSketch\libraries\EEPROM;$(SolutionDir)..\..\HeatingSystemSketch\libraries\FlashStrings;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_Talk;$(SolutionDir)..\..\HeatingSystemSketch\libraries\PinObject;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Sum_Operators;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Timer_mS_uS;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Type_Traits;$(SolutionDir)Arduino_Logger;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\VS_Projects\NewHeatingSystem\Arduino;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Bitfield;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Clock;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Conversions;$(SolutionDir)..\..\HeatingSystemSketch\libraries\DateTime\src;$(SolutionDir)..\..\HeatingSystemSketch\libraries\EEPROM;$(SolutionDir)..\..\HeatingSystemSketch\libraries\FlashStrings;$(SolutionDir)..\..\HeatingSystemSketch\libraries\I2C_Talk;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Logging;$(SolutionDir)..\..\HeatingSystemSketch\libraries\MemoryFree;$(SolutionDir)..\..\HeatingSystemSketch\libraries\PinObject;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Sum_Operators;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Timer_mS_uS;$(SolutionDir)..\..\HeatingSystemSketch\libraries\Type_Traits;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,6 +150,7 @@
     <ClCompile Include="..\..\..\..\HeatingSystemSketch\libraries\DateTime\src\Date_Only.cpp" />
     <ClCompile Include="..\..\..\..\HeatingSystemSketch\libraries\DateTime\src\Date_Time.cpp" />
     <ClCompile Include="..\..\..\..\HeatingSystemSketch\libraries\DateTime\src\Time_Only.cpp" />
+    <ClCompile Include="..\..\..\..\HeatingSystemSketch\libraries\Logging\Logging.cpp" />
     <ClCompile Include="..\..\..\..\HeatingSystemSketch\libraries\MemoryFree\MemoryFree.cpp" />
     <ClCompile Include="..\..\..\..\HeatingSystemSketch\libraries\Timer_mS_uS\Timer_mS_uS.cpp" />
     <ClCompile Include="..\..\..\NewHeatingSystem\Arduino\Arduino.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="..\..\..\..\HeatingSystemSketch\libraries\DateTime\src\Date_Only.h" />
     <ClInclude Include="..\..\..\..\HeatingSystemSketch\libraries\DateTime\src\Date_Time.h" />
     <ClInclude Include="..\..\..\..\HeatingSystemSketch\libraries\DateTime\src\Time_Only.h" />
+    <ClInclude Include="..\..\..\..\HeatingSystemSketch\libraries\Logging\Logging.h" />
     <ClInclude Include="..\..\..\..\HeatingSystemSketch\libraries\MemoryFree\MemoryFree.h" />
     <ClInclude Include="..\..\..\..\HeatingSystemSketch\libraries\Timer_mS_uS\Timer_mS_uS.h" />
     <ClInclude Include="..\..\..\..\HeatingSystemSketch\libraries\Type_Traits\Type_Traits.h" />

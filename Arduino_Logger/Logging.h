@@ -110,6 +110,7 @@ namespace arduino_logger {
 
 		void flush() override { Serial.flush(); Logger::flush(); }
 		void begin(uint32_t baudRate) override;
+		bool open() override { return (bool)Serial; }
 		bool mirror_stream(ostreamPtr& mirrorStream) override {
 			if (mirrorStream == &Serial) mirrorStream = nullptr; else mirrorStream = &Serial;
 			return mirrorStream == &Serial ? true : false;

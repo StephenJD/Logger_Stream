@@ -1,0 +1,12 @@
+Start F1
+13/04/21 18:52:47	Time F1
+f1_logger hex 0x2BC |F|
+f1_logger more
+Start F1
+13/04/21 18:52:53	Time F1
+f1_logger hex 0x2BC |F|
+f1_logger more
+Start F1
+13/04/21 18:52:47	Time F1
+f1_logger hex 0x2BC |F|
+f1_logger more
