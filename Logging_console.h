@@ -10,7 +10,7 @@
 #include <source_location>
 #define L_location location()
 #else
-#define L_location location(__FILE__,__LINE__)
+#define L_location location(__FILE__,__LINE__, __func__)
 #endif
 
 namespace logging {
@@ -27,9 +27,9 @@ namespace logging {
 		return ss.str();
 	}
 #else
-	inline std::string location(const char* file, int lineNo) {
+	inline std::string location(const char* file, int lineNo, const char* function) {
 		auto ss = std::stringstream{};
-		ss << file << "\t" << lineNo;
+		ss << file << " : " << lineNo << " '" << function << "'";
 		return ss.str();
 	}
 #endif	

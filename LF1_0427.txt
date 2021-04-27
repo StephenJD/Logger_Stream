@@ -1,0 +1,16 @@
+Constructing Widget
+StartFile1
+27/04/21 19:32:24	new data
+27/04/21 19:32:24	Flushed more data |F|
+27/04/21 19:32:24	yet	more	data
+ |F|
+StartFile2
+LF2_ 27/04/21 19:32:24	File2 time
+Constructing Widget
+StartFile1
+27/04/21 19:34:33	new data
+27/04/21 19:34:33	Flushed more data |F|
+27/04/21 19:34:33	yet	more	data
+ |F|
+StartFile2
+LF2_ 27/04/21 19:34:33	File2 time
